@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>設定 — {{BRAND}}</title>
+<link rel="icon" href="icons/favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<script>try{document.documentElement.dataset.skin=localStorage.getItem("tj.skin")||"white"}catch(e){document.documentElement.dataset.skin="white"}</script>
+<link rel="stylesheet" href="css/app.css">
+<style>
+  /* 設定はグループごとに折りたたむ — 縦スクロール一気読み禁止(0919) */
+  .hd{padding:26px 0 8px}
+  .hd h1{font-size:26px}
+  details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);margin-top:10px}
+  summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:800;font-size:17px;display:flex;justify-content:space-between}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"＋";color:var(--ink-4)}
+  details[open] summary::after{content:"－"}
+  .in{padding:0 18px 18px;display:flex;flex-direction:column;gap:16px}
+  .f label{display:block;font-size:14px;color:var(--ink-3);font-weight:700;margin-bottom:6px}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{appearance:none;border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:var(--r2);
+    padding:9px 13px;font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .seg button[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);background:var(--surface-3)}
+  .seg i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(128,128,128,.5)}
+  input[type=text],input[type=date]{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line-2);border-radius:var(--r2);background:var(--surface);color:var(--ink)}
+  textarea{width:100%;min-height:80px;font:12px/1.4 monospace;border:1px solid var(--line-2);border-radius:var(--r2);background:var(--surface-2);color:var(--ink-2)}
+  .msg{font-size:14px;color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hd"><h1>設定</h1></div>
+
+  <details open><summary>学習</summary><div class="in">
+    <div class="f"><label>試験・科目</label><div class="seg"><button type="button" id="trk"></button></div></div>
+    <div class="f"><label>試験日 <span class="chip" id="gm"></span></label><input type="date" id="goal"></div>
+    <div class="f"><label>1日の時間</label><div class="seg" id="min"></div></div>
+    <div class="f"><label>呼び名</label><input type="text" id="nm" maxlength="12" placeholder="ニックネーム"></div>
+  </div></details>
+
+  <details><summary>画面</summary><div class="in">
+    <div class="f"><label>テーマ</label><div class="seg" id="skin"></div></div>
+    <div class="f"><label>等級バッジ</label><div class="seg" id="tier"></div></div>
+  </div></details>
+
+  <details><summary>記録</summary><div class="in">
+    <div class="f"><label>記録の引き継ぎ — このテキストをコピーして、別の端末の同じ欄に貼り付けます</label>
+      <textarea id="ex" readonly></textarea>
+      <div class="seg" style="margin-top:8px"><button type="button" id="cp">コピー</button><button type="button" id="im">貼り付けた記録を復元</button></div>
+      <p class="msg" id="msg"></p></div>
+    <div class="f"><label>最初から</label><div class="seg"><button type="button" id="again">初期設定をやり直す</button><button type="button" id="rs">記録をすべて消す</button></div></div>
+  </div></details>
+</div>
+<script src="js/brand.js"></script>
+<script src="js/catalog.js"></script>
+<script src="data/ready.js"></script>
+<script src="js/boot.js"></script>
+<script src="js/store.js"></script>
+<script>
+(function () {
+  "use strict";
+  GB.mountNav("settings.html");
+  var $ = function (id) { return document.getElementById(id); };
+  function seg(host, items, cur, on) {
+    host.innerHTML = items.map(function (x) {
+      return '<button type="button" data-v="' + x.v + '" aria-pressed="' + (String(x.v) === String(cur)) + '">' + (x.c ? '<i style="background:' + x.c + '"></i>' : "") + x.n + "</button>";
+    }).join("");
+    host.querySelectorAll("button").forEach(function (b) {
+      b.onclick = function () {
+        host.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+        on(b.dataset.v);
+      };
+    });
+  }
+  function drawGoal() { $("goal").value = GB.goal(); $("gm").textContent = GB.goalMark(); }
+  $("trk").textContent = GB.track().name + " ・ 変更";
+  $("trk").onclick = function () { location.href = "start.html?step=exam"; };
+  drawGoal();
+  $("goal").onchange = function () { if (this.value) { GB.setGoal(this.value, true); drawGoal(); } };
+  seg($("min"), [10, 15, 20, 30].map(function (m) { return { v: m, n: m + "分" }; }), GB.minutes(), function (v) { GB.setMinutes(+v); });
+  $("nm").value = GB.name();
+  $("nm").onchange = function () { GB.setName(this.value); };
+  seg($("tier"), [{ v: "1", n: "表示" }, { v: "0", n: "非表示" }], GB.tierOn() ? "1" : "0", function (v) { GB.setTierOn(v === "1"); });
+  seg($("skin"), GB.SKINS.map(function (s) { return { v: s.v, n: s.n, c: s.c }; }), GB.skin(), function (v) { GB.setSkin(v); });
+
+  $("ex").value = GB.exportData();
+  $("cp").onclick = function () { $("ex").select(); try { navigator.clipboard.writeText($("ex").value); } catch (e) { document.execCommand("copy"); } $("msg").textContent = "コピーしました。"; };
+  $("im").onclick = function () {
+    var t = prompt("別の端末でコピーした記録を貼り付けてください");
+    if (!t) return;
+    try { GB.importData(t); $("msg").textContent = "復元しました。"; setTimeout(function () { location.reload(); }, 600); }
+    catch (e) { $("msg").textContent = "形式が違います。コピーしたテキスト全体を貼り付けてください。"; }
+  };
+  $("again").onclick = function () {
+    try { var p = JSON.parse(localStorage.getItem("tj.pref.v1") || "{}"); delete p.onboarded; localStorage.setItem("tj.pref.v1", JSON.stringify(p)); } catch (e) {}
+    location.href = "start.html";
+  };
+  $("rs").onclick = function () { if (confirm("解いた記録をすべて消しますか。元に戻せません。")) { GB.reset(); location.reload(); } };
+})();
+</script>
+</body>
+</html>

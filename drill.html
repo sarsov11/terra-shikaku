@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>トレーニング — {{BRAND}}</title>
+<link rel="icon" href="icons/favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<script>try{document.documentElement.dataset.skin=localStorage.getItem("tj.skin")||"white"}catch(e){document.documentElement.dataset.skin="white"}</script>
+<link rel="stylesheet" href="css/app.css">
+<style>
+  .hd{padding:26px 0 4px}
+  .hd h1{font-size:26px}
+  .hd p{color:var(--ink-3);margin:4px 0 0}
+  .row .n{font-weight:900;font-size:15px;color:var(--ink-3);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hd"><h1>トレーニング</h1><p>今日の分とは別に、やりたいものだけ選んで。</p></div>
+  <div class="list sec" id="ls"></div>
+</div>
+<script src="js/brand.js"></script>
+<script src="js/catalog.js"></script>
+<script src="data/ready.js"></script>
+<script src="js/boot.js"></script>
+<script src="js/store.js"></script>
+<script>
+(function () {
+  "use strict";
+  GB.mountNav("drill.html");
+  var S = GB.state(), done = Object.keys(S.pairs).filter(function (k) { return S.pairs[k].ok; }).length;
+  var wrong = GB.wrongList().length, mis = Object.keys(S.ans).filter(function (id) { return S.ans[id].kind === "misconception"; }).length;
+  var rows = [
+    ["ox.html?mode=hard", "難しい〇×", "正しい文と一、二か所だけ違う誤りの文" + (mis ? " ・ 確信していたのに間違えた " + mis + "文から先に" : ""), GB.pairs().length + "文"],
+    ["ox.html?mode=pair", "紛らわしいペア", "似ている過去問の文二つから正しい方を選ぶ", done + " / " + GB.pairs().length],
+    ["ox.html?mode=speed", "60秒スピード", "確信度なしで反応だけ。短い文で", "60秒"],
+    ["ox.html?mode=wrong", "間違えた文をもう一度", wrong ? "最近間違えたものから" : "まだ間違えた文がありません", wrong + "文"],
+    ["skilltree.html", "論点を選んで解く", "スキルツリーで論点を押すと、その論点だけ解けます", GB.nodes.length + "論点"]
+  ];
+  document.getElementById("ls").innerHTML = rows.map(function (r) {
+    return '<a class="row" href="' + r[0] + '"><span class="t"><b>' + r[1] + "</b><span>" + GB.esc(r[2]) + '</span></span><span class="n num">' + r[3] + "</span></a>";
+  }).join("");
+})();
+</script>
+</body>
+</html>

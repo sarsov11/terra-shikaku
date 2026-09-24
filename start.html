@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>はじめに — {{BRAND}}</title>
+<link rel="icon" href="icons/favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<script>try{document.documentElement.dataset.skin=localStorage.getItem("tj.skin")||"white"}catch(e){document.documentElement.dataset.skin="white"}</script>
+<link rel="stylesheet" href="css/app.css">
+<style>
+  /* 最初の設定 — 1 画面に質問 1 つ、大きなボタン 1 つ */
+  .wrap{max-width:520px;margin:0 auto;padding:28px 16px 48px;min-height:100vh;display:flex;flex-direction:column}
+  .dots{display:flex;gap:6px;margin-bottom:28px}
+  .dots i{flex:1;height:4px;border-radius:99px;background:var(--surface-3)}
+  .dots i.on{background:var(--ink)}
+  h1{font-size:27px;letter-spacing:-.05em}
+  .lead{color:var(--ink-3);font-size:16px;margin:8px 0 0}
+  .body{flex:1;margin-top:26px}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opts button{appearance:none;position:relative;text-align:left;border:1.5px solid var(--line-2);background:var(--surface);
+    border-radius:var(--r3);padding:16px 18px;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .opts button small{font-size:14px;color:var(--ink-3);font-weight:600}
+  .opts button[aria-pressed="true"]{border:2px solid var(--ink);background:var(--surface-3)}
+  .opts.g2{display:grid;grid-template-columns:1fr 1fr}
+  input[type=text],input[type=date]{width:100%;font:inherit;font-size:19px;padding:15px 16px;border:1.5px solid var(--line-2);
+    border-radius:var(--r3);background:var(--surface);color:var(--ink)}
+  input:focus{outline:none;border-color:var(--ink)}
+  .foot{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+  .skip{appearance:none;border:0;background:none;color:var(--ink-4);font-size:15px;cursor:pointer;padding:6px;position:relative}
+  .skip .tip{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);width:250px;background:var(--ink);color:var(--bg);
+    font-size:13.5px;padding:8px 10px;border-radius:var(--r1);line-height:1.45}
+  .skip:hover .tip,.skip:focus .tip,.skip.on .tip{display:block}
+  .dateline{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:28px;font-weight:900;letter-spacing:-.05em}
+  .qhd{display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--ink-3);font-weight:700}
+  .perpart{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .perpart div{display:grid;grid-template-columns:1fr 60px;gap:6px 10px;align-items:center;font-size:15px}
+  .perpart .bar{grid-column:1 / -1}
+  .from{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:var(--r3);background:var(--surface)}
+  .from b{display:block;font-size:14px;color:var(--ink-3);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="dots" id="dots"></div>
+  <div id="scr"></div>
+</div>
+
+<script src="js/brand.js"></script>
+<script src="js/catalog.js"></script>
+<script src="data/ready.js"></script>
+<script src="js/boot.js"></script>
+<script src="js/judge.js"></script>
+<script src="js/store.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); }, esc = GB.esc;
+  var LIMIT = 15000;     /* 一括テスト 1 文の制限時間 — 行政法向けの選択肢は通常の〇×(10秒)より長いので15秒 */
+  var STEPS = ["intro", "exam", "series", "subs", "name", "date", "min", "check", "done"];
+  /* 科目が決まった後の実力確認は、その学習者の科目のうち準備できている最初の科目で行う —
+     今読み込んでいる資料と違う科目なら、その科目で改めて開く */
+  var 開始段階 = new URLSearchParams(location.search).get("step");
+  var at = 0, A = { rec: [] };
+
+  function dots() {
+    $("dots").innerHTML = STEPS.map(function (s, i) { return '<i class="' + (i <= at ? "on" : "") + '"></i>'; }).join("");
+  }
+  function go(i) { at = i; dots(); 画面[STEPS[i]](); window.scrollTo(0, 0); }
+  function nextStep() { go(at + 1); }
+
+  var 画面 = {
+    intro: function () {
+      $("scr").innerHTML = '<h1>過去問に出た文で<br>〇×から解きます</h1>' +
+        '<p class="lead">1 日に決めた時間だけ。今日やることはこちらで選びます。</p>' +
+        '<div class="body"></div><div class="foot"><button class="btn block" id="n">はじめる</button></div>';
+      $("n").onclick = nextStep;
+    },
+    name: function () {
+      $("scr").innerHTML = "<h1>何とお呼びしましょうか</h1><p class=\"lead\">ホーム画面でこの名前で呼びます。空欄でも構いません。</p>" +
+        '<div class="body"><input type="text" id="nm" maxlength="12" placeholder="ニックネーム" value="' + esc(GB.name()) + '"></div>' +
+        '<div class="foot"><button class="btn block" id="n">次へ</button></div>';
+      $("nm").focus();
+      $("nm").onkeydown = function (e) { if (e.key === "Enter") $("n").click(); };
+      $("n").onclick = function () { GB.setName($("nm").value); nextStep(); };
+    },
+    exam: function () {
+      var cur = null;
+      try { cur = (JSON.parse(localStorage.getItem("tj.pref.v1") || "{}").exam) || null; } catch (e) {}
+      $("scr").innerHTML = "<h1>どの試験を受けますか？</h1><p class=\"lead\">試験に合わせて科目と過去問をご用意します。</p>" +
+        '<div class="body"><div class="opts" id="op">' + CATALOG.EXAMS.map(function (e) {
+          return '<button type="button" data-v="' + e.id + '" aria-pressed="' + (e.id === cur) + '">' + e.name + "<small>" + e.sub + "</small></button>";
+        }).join("") + "</div></div>";
+      $("op").querySelectorAll("button").forEach(function (b) {
+        b.onclick = function () {
+          b.setAttribute("aria-pressed", "true");
+          var e = CATALOG.exam(b.dataset.v);
+          GB.setExam(e.id, null);
+          setTimeout(function () { go(STEPS.indexOf(e.series ? "series" : "subs")); }, 120);
+        };
+      });
+    },
+    series: function () {
+      var e = GB.exam();
+      if (!e.series) return go(STEPS.indexOf("subs"));
+      $("scr").innerHTML = "<h1>どちらの区分ですか？</h1><p class=\"lead\">" + esc(e.name) + " — 区分ごとに専門科目が違います。</p>" +
+        '<div class="body"><div class="opts" id="op">' + e.series.map(function (x) {
+          return '<button type="button" data-v="' + x.id + '">' + x.name + "<small>" +
+            x.subs.map(function (k) { return CATALOG.name(k); }).join(" · ") + "</small></button>";
+        }).join("") + "</div></div>";
+      $("op").querySelectorAll("button").forEach(function (b) {
+        b.onclick = function () { b.setAttribute("aria-pressed", "true"); GB.setExam(e.id, b.dataset.v); setTimeout(nextStep, 120); };
+      });
+    },
+    subs: function () {
+      var ss = GB.subs();
+      $("scr").innerHTML = "<h1>この科目を見ていきます</h1><p class=\"lead\">" + esc(GB.track().name) + " 試験の科目です。準備できている科目から解けます。</p>" +
+        '<div class="body"><div class="opts">' + ss.map(function (k) {
+          var r = CATALOG.ready(k);
+          return '<button type="button" disabled style="cursor:default;opacity:1">' + CATALOG.name(k) + "<small>" +
+            (r ? "過去問 " + GB.num(CATALOG.count(k)) + "問" : "準備中") + "</small></button>";
+        }).join("") + "</div></div>" +
+        '<div class="foot"><button class="btn block" id="n">はい</button></div>';
+      $("n").onclick = nextStep;
+    },
+    date: function () {
+      var tr = GB.track();
+      $("scr").innerHTML = "<h1>試験日</h1><p class=\"lead\">2027年の" + esc(GB.exam().name) + "の日程はまだ発表前です。例年をもとにした予想日を入れています。</p>" +
+        '<div class="body"><div class="dateline num"><span id="dv">' + GB.goal().replace(/-/g, ".") + '</span><span class="chip" id="dm">' + GB.goalMark() + "</span></div>" +
+        '<input type="date" id="di" value="' + GB.goal() + '"></div>' +
+        '<div class="foot"><button class="btn block" id="n">この日付にする</button></div>';
+      $("di").onchange = function () {
+        if (!this.value) return;
+        GB.setGoal(this.value, true);
+        $("dv").textContent = this.value.replace(/-/g, "."); $("dm").textContent = "手動";
+      };
+      $("n").onclick = nextStep;
+    },
+    min: function () {
+      var cur = GB.minutes();
+      $("scr").innerHTML = "<h1>1 日何分にしますか？</h1><p class=\"lead\">決めた時間だけ取り組みます。あとで設定から変えられます。</p>" +
+        '<div class="body"><div class="opts g2" id="op">' + [10, 15, 20, 30].map(function (m) {
+          return '<button type="button" data-v="' + m + '" aria-pressed="' + (m === cur) + '">' + m + "分<small>約 " + Math.round(m * 60 / GB.SEC_PER) + "問</small>" +
+            (m === 15 ? '<span class="bdg">おすすめ</span>' : "") + "</button>";
+        }).join("") + "</div></div>";
+      $("op").querySelectorAll("button").forEach(function (b) {
+        b.onclick = function () { GB.setMinutes(+b.dataset.v); b.setAttribute("aria-pressed", "true"); setTimeout(nextStep, 120); };
+      });
+    },
+    check: function () {
+      var mine = GB.subs().filter(function (k) { return CATALOG.ready(k); });
+      if (mine.length && mine.indexOf(GB.cur()) < 0) { location.replace("start.html?s=" + mine[0] + "&step=check"); return; }
+      if (!mine.length) return go(STEPS.indexOf("done"));
+      var set = GB.placementSet(20), i = 0, timer = null, t0 = 0;
+      if (set.length < 5) return go(STEPS.indexOf("done"));   /* 〇×の文が無い科目 — 実力確認なしで始める */
+      function one() {
+        if (i >= set.length) { clearInterval(timer); return fin(); }
+        var q = set[i]; t0 = Date.now();
+        $("scr").innerHTML = '<div class="qhd"><span>実力確認 ' + (i + 1) + " / " + set.length + '</span><span class="chip">' + esc(GB.node(q.n).name) + "</span></div>" +
+          '<div class="tm" id="tm"><i style="width:100%"></i></div>' +
+          '<div class="qcard" style="margin-top:14px"><p class="sent">' + esc(q.t) + "</p></div>" +
+          '<div class="oxb" id="oxb"><button type="button" data-a="O">〇</button><button type="button" data-a="X">×</button></div>' +
+          '<div class="foot"><button class="skip" id="sk">スキップ<span class="tip">20 問すべて解いてこそ、どこから始めるか正確に選べます。</span></button></div>';
+        var locked = false;
+        function pick(a) {
+          if (locked) return; locked = true;
+          var ms = Date.now() - t0, to = a == null, ok = !to && a === q.ox;
+          $("oxb").querySelectorAll("button").forEach(function (x) {
+            x.disabled = true;
+            if (x.dataset.a === q.ox) x.dataset.s = "ok"; else if (x.dataset.a === a) x.dataset.s = "no";
+          });
+          A.rec.push({ id: q.i, ok: ok, ms: ms, to: to });
+          GB.answer(q.i, ok, { ms: ms, kind: to ? "timeout" : ok ? "right" : "wrong" });
+          i++; setTimeout(one, ok ? 450 : 1100);
+        }
+        $("oxb").querySelectorAll("button").forEach(function (b) { b.onclick = function () { pick(b.dataset.a); }; });
+        var armed = false;
+        $("sk").onclick = function () {
+          if (!armed) { armed = true; this.classList.add("on"); this.firstChild.textContent = "それでもスキップ";
+            var me = this; setTimeout(function () { armed = false; me.classList.remove("on"); me.firstChild.textContent = "スキップ"; }, 6000); return; }
+          clearInterval(timer); A.skipped = true; fin();
+        };
+        clearInterval(timer);
+        timer = setInterval(function () {
+          var left = LIMIT - (Date.now() - t0), el = $("tm");
+          if (!el) return;
+          el.firstChild.style.width = Math.max(0, left / LIMIT * 100) + "%";
+          el.classList.toggle("low", left < LIMIT * 0.3);
+          if (left <= 0) { clearInterval(timer); pick(null); }
+        }, 100);
+      }
+      function fin() { A.place = GB.setPlacement(A.rec); nextStep(); }
+      one();
+    },
+    done: function () {
+      var p = A.place || GB.placement() || { n: 0, ok: 0, per: {} };
+      /* ★「ここから」はホームの今日やることが実際に選んだ論点と同じである必要がある — 違うと学習者が混乱する */
+      var from = GB.today().foci.slice(0, 3);
+      var fast = A.rec.filter(function (r) { return r.ok && r.ms < 6000; }).length;
+      $("scr").innerHTML = "<h1>" + (p.n ? p.n + "問中 " + p.ok + "問" : "いいですね、早速始めましょう") + "</h1>" +
+        (p.n ? '<p class="lead">すぐ（6秒以内）に正解した問題 ' + fast + "問 · 時間切れ " + A.rec.filter(function (r) { return r.to; }).length + "問</p>" : "") +
+        '<div class="body">' +
+        (p.n ? '<div class="perpart">' + GB.parts.filter(function (pt) { return p.per[pt.no]; }).map(function (pt) {
+          var x = p.per[pt.no];
+          return "<div><span>" + esc(pt.name) + '</span><span class="num" style="text-align:right">' + x.ok + " / " + x.n + '</span><div class="bar"><i style="width:' + Math.round(x.ok / x.n * 100) + '%"></i></div></div>';
+        }).join("") + "</div>" : "") +
+        (from.length ? '<div class="from"><b>ここから</b>' + from.map(function (n) { return esc(n.name); }).join(" · ") + "</div>" : "") +
+        '</div><div class="foot"><button class="btn block" id="n">今日やることを見る</button></div>';
+      $("n").onclick = function () { GB.setOnboarded(); location.href = "index.html"; };
+    }
+  };
+  go(開始段階 && STEPS.indexOf(開始段階) >= 0 ? STEPS.indexOf(開始段階) : 0);
+})();
+</script>
+</body>
+</html>
