@@ -20,6 +20,16 @@
     kb_otsu4_law:     { name: "危険物に関する法令" },
     kb_otsu4_sei:     { name: "危険物の性質並びにその火災予防及び消火の方法" },
     kb_otsu4_phys:    { name: "基礎的な物理学及び基礎的な化学" },
+    kb_kou_law: { name: "危険物に関する法令" },
+    kb_kou_phys: { name: "物理学及び化学" },
+    kb_kou_sei: { name: "危険物の性質並びにその火災予防及び消火の方法" },
+    kb_otsu_law: { name: "危険物に関する法令" },
+    kb_otsu_phys: { name: "基礎的な物理学及び基礎的な化学" },
+    kb_otsu1_sei: { name: "危険物の性質並びにその火災予防及び消火の方法" },
+    kb_otsu2_sei: { name: "危険物の性質並びにその火災予防及び消火の方法" },
+    kb_otsu3_sei: { name: "危険物の性質並びにその火災予防及び消火の方法" },
+    kb_otsu5_sei: { name: "危険物の性質並びにその火災予防及び消火の方法" },
+    kb_otsu6_sei: { name: "危険物の性質並びにその火災予防及び消火の方法" },
     sb_kou_all:       { name: "甲種（機械・電気に関する基礎知識／構造・機能・整備／法令）" },
     sb_otsu_all:      { name: "乙種（機械・電気に関する基礎知識／構造・機能・整備／法令）" },
     sb_otsu6_kiso:    { name: "基礎的知識" },
@@ -32,7 +42,13 @@
     { id: "kikenbutsu", name: "危険物取扱者", sub: "年複数回実施（都道府県ごとに日程が異なる — 試験日は設定画面で入力）",
       date: null, series: [
         { id: "byo", name: "丙種", subs: ["kb_byo_law", "kb_byo_sei", "kb_byo_phys"] },
-        { id: "otsu4", name: "乙種第4類", subs: ["kb_otsu4_law", "kb_otsu4_sei", "kb_otsu4_phys"] }
+        { id: "kou", name: "甲種", subs: ["kb_kou_law", "kb_kou_phys", "kb_kou_sei"] },
+        { id: "otsu1", name: "乙種第1類", subs: ["kb_otsu_law", "kb_otsu1_sei", "kb_otsu_phys"] },
+        { id: "otsu2", name: "乙種第2類", subs: ["kb_otsu_law", "kb_otsu2_sei", "kb_otsu_phys"] },
+        { id: "otsu3", name: "乙種第3類", subs: ["kb_otsu_law", "kb_otsu3_sei", "kb_otsu_phys"] },
+        { id: "otsu4", name: "乙種第4類", subs: ["kb_otsu4_law", "kb_otsu4_sei", "kb_otsu4_phys"] },
+        { id: "otsu5", name: "乙種第5類", subs: ["kb_otsu_law", "kb_otsu5_sei", "kb_otsu_phys"] },
+        { id: "otsu6", name: "乙種第6類", subs: ["kb_otsu_law", "kb_otsu6_sei", "kb_otsu_phys"] }
       ] },
     { id: "shobosetsubishi", name: "消防設備士", sub: "年複数回実施（都道府県ごとに日程が異なる — 試験日は設定画面で入力）",
       date: null, series: [
