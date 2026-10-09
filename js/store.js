@@ -74,7 +74,9 @@
   /* 旧名称との互換 — 画面のいくつかが track() を呼ぶ */
   function track() { var e = exam(); return { id: e.id, name: e.name + (seriesName() ? " " + seriesName() : ""), exam: e.name, date: e.date }; }
   function setTrack(id) { setExam(id, P.series); }
-  function goal() { return P.goal || exam().date; }
+  /* 試験日が決まっていない試験(危険物・消防設備士)は goal() が今日を仮に返す。goalSet() で「入力済みか」を見る(2026-10-09 試験日の画面が落ちていた) */
+  function goal() { return P.goal || exam().date || TODAY; }
+  function goalSet() { return !!(P.goal || exam().date); }
   function goalMark() { return P.goalMine ? "手動" : "予想"; }
   function setGoal(d, mine) { P.goal = d || null; P.goalMine = !!mine; savePref(); }
   function dday() { return dayNo(goal()) - TODAYN; }
@@ -398,7 +400,7 @@
     dueList: dueList, wrongList: wrongList, focusNodes: focusNodes, freshOf: freshOf,
     today: today, markToday: markToday, streak: streak, todayCount: todayCount, tier: tier, tierOn: tierOn, setTierOn: setTierOn, days: days, SEC_PER: SEC_PER,
     placementSet: placementSet, setPlacement: setPlacement, placement: function () { return S.place || null; },
-    track: track, setTrack: setTrack, exam: exam, setExam: setExam, subs: subs, cur: cur, setCur: setCur, seriesName: seriesName, goal: goal, goalMark: goalMark, setGoal: setGoal, dday: dday,
+    track: track, setTrack: setTrack, exam: exam, setExam: setExam, subs: subs, cur: cur, setCur: setCur, seriesName: seriesName, goal: goal, goalSet: goalSet, goalMark: goalMark, setGoal: setGoal, dday: dday,
     minutes: minutes, setMinutes: setMinutes, name: name, setName: setName,
     onboarded: onboarded, setOnboarded: setOnboarded,
     skin: skin, setSkin: setSkin, SKINS: SKINS,

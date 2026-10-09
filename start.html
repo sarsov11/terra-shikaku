@@ -125,9 +125,9 @@
     },
     date: function () {
       var tr = GB.track();
-      $("scr").innerHTML = "<h1>試験日</h1><p class=\"lead\">2027年の" + esc(GB.exam().name) + "の日程はまだ発表前です。例年をもとにした予想日を入れています。</p>" +
-        '<div class="body"><div class="dateline num"><span id="dv">' + GB.goal().replace(/-/g, ".") + '</span><span class="chip" id="dm">' + GB.goalMark() + "</span></div>" +
-        '<input type="date" id="di" value="' + GB.goal() + '"></div>' +
+      $("scr").innerHTML = "<h1>試験日</h1><p class=\"lead\">" + (GB.goalSet() ? "2027年の" + esc(GB.exam().name) + "の日程はまだ発表前です。例年をもとにした予想日を入れています。" : esc(GB.exam().name) + "は都道府県ごとに日程が違います。受ける日が決まっていれば入れてください。あとから設定でも変えられます。") + "</p>" +
+        '<div class="body"><div class="dateline num"><span id="dv">' + (GB.goalSet() ? GB.goal().replace(/-/g, ".") : "未定") + '</span><span class="chip" id="dm">' + (GB.goalSet() ? GB.goalMark() : "") + "</span></div>" +
+        '<input type="date" id="di" value="' + (GB.goalSet() ? GB.goal() : "") + '"></div>' +
         '<div class="foot"><button class="btn block" id="n">この日付にする</button></div>';
       $("di").onchange = function () {
         if (!this.value) return;
@@ -170,6 +170,7 @@
             if (x.dataset.a === q.ox) x.dataset.s = "ok"; else if (x.dataset.a === a) x.dataset.s = "no";
           });
           A.rec.push({ id: q.i, ok: ok, ms: ms, to: to });
+          if (window.ZZ) { if (ok) ZZ.ok(document.querySelector('#oxb [data-s="ok"]')); else ZZ.no(document.querySelector('#oxb [data-s="no"]')); }
           GB.answer(q.i, ok, { ms: ms, kind: to ? "timeout" : ok ? "right" : "wrong" });
           i++; setTimeout(one, ok ? 450 : 1100);
         }
@@ -197,6 +198,7 @@
       /* ★「ここから」はホームの今日やることが実際に選んだ論点と同じである必要がある — 違うと学習者が混乱する */
       var from = GB.today().foci.slice(0, 3);
       var fast = A.rec.filter(function (r) { return r.ok && r.ms < 6000; }).length;
+      if (window.ZZ && p.n && !A.starred) { A.starred = 1; var rr = p.ok / p.n; var kk = rr >= 1 ? 3 : rr >= 0.7 ? 2 : rr >= 0.4 ? 1 : 0; if (kk) ZZ.stars(kk); }
       $("scr").innerHTML = "<h1>" + (p.n ? p.n + "問中 " + p.ok + "問" : "いいですね、早速始めましょう") + "</h1>" +
         (p.n ? '<p class="lead">すぐ（6秒以内）に正解した問題 ' + fast + "問 · 時間切れ " + A.rec.filter(function (r) { return r.to; }).length + "問</p>" : "") +
         '<div class="body">' +
@@ -212,5 +214,6 @@
   go(開始段階 && STEPS.indexOf(開始段階) >= 0 ? STEPS.indexOf(開始段階) : 0);
 })();
 </script>
+<script src="js/zzsfx.js?v=1009a" defer></script><script src="js/zzajan.js?v=1009a" defer></script>
 </body>
 </html>

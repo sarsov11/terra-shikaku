@@ -78,7 +78,8 @@
     if (!CATALOG.ready(k)) return "<span>" + esc(CATALOG.name(k)) + "<small>準備中</small></span>";
     return '<a href="index.html?s=' + k + '"' + (k === GB.cur() ? ' class="on"' : "") + ">" + esc(CATALOG.name(k)) + "</a>";
   }).join("");
-  $("ed").innerHTML = (dd > 0 ? "D-" + dd : dd === 0 ? "D-DAY" : "試験終了") + "<small>" + GB.goal().replace(/-/g, ".") +
+  $("ed").innerHTML = !GB.goalSet() ? "試験日 未設定<small>設定画面で入力</small>" :
+    (dd > 0 ? "D-" + dd : dd === 0 ? "D-DAY" : "試験終了") + "<small>" + GB.goal().replace(/-/g, ".") +
     ' <span class="chip">' + GB.goalMark() + "</span></small>";
 
   var t = GB.today(), nm = GB.name();
@@ -138,5 +139,6 @@
     (wrong ? '<a class="row" href="ox.html?mode=wrong"><span class="t"><b>間違えた文をもう一度</b><span>' + wrong + "文</span></span><span class=\"go\">›</span></a>" : "");
 })();
 </script>
+<script src="js/zzsfx.js?v=1009a" defer></script><script src="js/zzajan.js?v=1009a" defer></script>
 </body>
 </html>

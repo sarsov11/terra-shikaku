@@ -74,7 +74,7 @@
       };
     });
   }
-  function drawGoal() { $("goal").value = GB.goal(); $("gm").textContent = GB.goalMark(); }
+  function drawGoal() { $("goal").value = GB.goalSet() ? GB.goal() : ""; $("gm").textContent = GB.goalSet() ? GB.goalMark() : "未設定"; }
   $("trk").textContent = GB.track().name + " ・ 変更";
   $("trk").onclick = function () { location.href = "start.html?step=exam"; };
   drawGoal();
@@ -100,5 +100,6 @@
   $("rs").onclick = function () { if (confirm("解いた記録をすべて消しますか。元に戻せません。")) { GB.reset(); location.reload(); } };
 })();
 </script>
+<script src="js/zzsfx.js?v=1009a" defer></script><script src="js/zzajan.js?v=1009a" defer></script>
 </body>
 </html>

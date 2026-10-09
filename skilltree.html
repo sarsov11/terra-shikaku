@@ -929,5 +929,14 @@
   GB.mountNext();
 })();
 </script>
+<script src="js/zzsfx.js?v=1009a" defer></script><script src="js/zzajan.js?v=1009a" defer></script><script src="js/zzcoach.js?v=1009a" defer></script>
+<script>
+/* 첫 진입 안내(zzcoach.js, defer 라 load 뒤에 부른다). 한 번 보면 다시 안 뜬다 */
+window.addEventListener("load", function () { if (!window.ZZCOACH) return; ZZCOACH.run("terra-shikaku.skilltree", [
+  { el: function () { var t = document.querySelector(".tabbar a"); if (t && t.offsetParent) return t; return document.querySelector(".navlinks a"); }, text: "ホームで今日解く問題をすぐ始められる" },
+  { el: function () { var l = document.querySelector("#treelist .mrow"); return (l && l.offsetParent) ? l : document.querySelector(".board"); }, text: "出題範囲の地図。編、章、論点の順に入り、論点で過去問の演習を始める" },
+  { el: "#legend", text: "円の色は習熟度。S は80以上、A は60以上、B は30以上、C は30未満、未着手は–。円の大きさは学習量" }
+], { delay: 900 }); });
+</script>
 </body>
 </html>
