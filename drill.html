@@ -32,8 +32,8 @@
   var S = GB.state(), done = Object.keys(S.pairs).filter(function (k) { return S.pairs[k].ok; }).length;
   var wrong = GB.wrongList().length, mis = Object.keys(S.ans).filter(function (id) { return S.ans[id].kind === "misconception"; }).length;
   var rows = [
-    ["ox.html?mode=hard", "難しい〇×", "正しい文と一、二か所だけ違う誤りの文" + (mis ? " ・ 確信していたのに間違えた " + mis + "文から先に" : ""), GB.pairs().length + "文"],
-    ["ox.html?mode=pair", "紛らわしいペア", "似ている過去問の文二つから正しい方を選ぶ", done + " / " + GB.pairs().length],
+    ["ox.html?mode=hard", "難しい〇×", "正しい文と一、二か所だけ違う誤りの文" + (mis ? " ・ 確信していたのに間違えた " + mis + "文から先に" : ""), (GB.pairs().length ? GB.pairs().length + "文" : "なし")],
+    ["ox.html?mode=pair", "二択の正しい文", "一、二か所だけ違う過去問の文二つ", (GB.pairs().length ? done + " / " + GB.pairs().length : "なし")],
     ["ox.html?mode=speed", "60秒スピード", "確信度なしで反応だけ。短い文で", "60秒"],
     ["ox.html?mode=wrong", "間違えた文をもう一度", wrong ? "最近間違えたものから" : "まだ間違えた文がありません", wrong + "文"],
     ["skilltree.html", "論点を選んで解く", "スキルツリーで論点を押すと、その論点だけ解けます", GB.nodes.length + "論点"]

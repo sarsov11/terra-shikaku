@@ -91,12 +91,12 @@
     h = '<h2>今日の分は終了です</h2><p class="t">' + t.total + "文を終えました。もっと練習したい場合は難しい〇×へどうぞ。</p>" +
         '<div style="margin-top:18px"><a class="btn block" href="ox.html?mode=hard">難しい〇×</a></div>';
   } else {
-    h = '<h2>' + (nm ? esc(nm) + "さん、" : "") + (t.done ? "続けて " : "") + t.min + "分だけやってみましょうか</h2>" +
+    h = '<h2>' + (nm ? esc(nm) + "さん ・ " : "") + (t.done ? "続き " : "今日 ") + t.min + "分</h2>" +
         '<p class="t">約' + t.min + "分・" + t.total + "文</p>" +
         "<ul>" +
         (t.re ? "<li><b class=\"num\">" + t.re + "文</b><span>復習 — 間違えたか、もう一度見る時期の文</span></li>" : "") +
         "<li><b class=\"num\">" + newN + "文</b><span>新しい問題 — " + esc(foci.join("・")) + "</span></li>" +
-        (prN ? "<li><b class=\"num\">" + prN + "文</b><span>紛らわしいペア</span></li>" : "") +
+        (prN ? "<li><b class=\"num\">" + prN + "文</b><span>二択の正しい文</span></li>" : "") +
         "</ul>" +
         (t.done ? '<div class="bar"><i style="width:' + Math.round(t.done / t.total * 100) + '%"></i></div>' : "") +
         '<a class="btn block" href="ox.html">' + (t.done ? "続けて・" + t.done + " / " + t.total : "開始") + "</a>";
@@ -135,7 +135,7 @@
   var wrong = GB.wrongList().length;
   $("alt").innerHTML =
     '<a class="row" href="ox.html?mode=hard"><span class="t"><b>難しい〇×</b><span>一、二か所を変えた誤りの文</span></span><span class="go">›</span></a>' +
-    '<a class="row" href="ox.html?mode=pair"><span class="t"><b>紛らわしいペア</b><span>似ている過去問の文二つから正しい方を選ぶ</span></span><span class="go">›</span></a>' +
+    '<a class="row" href="ox.html?mode=pair"><span class="t"><b>二択の正しい文</b><span>一、二か所だけ違う過去問の文二つ</span></span><span class="go">›</span></a>' +
     (wrong ? '<a class="row" href="ox.html?mode=wrong"><span class="t"><b>間違えた文をもう一度</b><span>' + wrong + "文</span></span><span class=\"go\">›</span></a>" : "");
 })();
 </script>

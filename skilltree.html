@@ -9,7 +9,7 @@
 <script>try{document.documentElement.dataset.skin=localStorage.getItem("tj.skin")||"white"}catch(e){document.documentElement.dataset.skin="white"}</script>
 <link rel="stylesheet" href="css/app.css">
 <style>
-  .wrapx{max-width:1360px;margin:0 auto;padding:0 var(--s3) var(--s6)}
+  .wrapx{max-width:1360px;margin:0 auto;padding:18px var(--s3) var(--s6)}
   h1,h2,.pk-title{font-family:var(--title);font-weight:var(--tw);letter-spacing:var(--tls)}
   .phead h1{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
   .crumb{display:inline-flex;align-items:baseline;gap:14px;flex-wrap:wrap}
@@ -885,7 +885,7 @@
       '個に分けたもの</b>です。章(中区分)は編の中で論点をまとめるために設けた階層です。<br>'+
       '<b>円のサイズは過去問の数ではなく学習量</b>です。過去問の数で測ると、近年に集中した論点が'+
       '実際より大きくなり、まだ選択肢が付いていない論点は点として消えてしまいます。<br>'+
-      '<b>過去問選択肢 '+GB.num(s.q)+'個</b>は公開された過去問から選んで論点に付けました。〇×の判定は'+
+      '<b>過去問選択肢 '+GB.num(ALL.n)+'個</b>は公開された過去問から選んで論点に付けました。〇×の判定は'+
       'その試験の正答表のとおりです。<br>'+
       '習熟度はこのブラウザに蓄積された学習記録です — どれだけ解いたかを55、どれだけ正解したかを45として数え、正解率は10文解くまでは低めに数えます。';
   }
@@ -931,7 +931,7 @@
 </script>
 <script src="js/zzsfx.js?v=1009a" defer></script><script src="js/zzajan.js?v=1009a" defer></script><script src="js/zzcoach.js?v=1009a" defer></script>
 <script>
-/* 첫 진입 안내(zzcoach.js, defer 라 load 뒤에 부른다). 한 번 보면 다시 안 뜬다 */
+/* - */
 window.addEventListener("load", function () { if (!window.ZZCOACH) return; ZZCOACH.run("terra-shikaku.skilltree", [
   { el: function () { var t = document.querySelector(".tabbar a"); if (t && t.offsetParent) return t; return document.querySelector(".navlinks a"); }, text: "ホームで今日解く問題をすぐ始められる" },
   { el: function () { var l = document.querySelector("#treelist .mrow"); return (l && l.offsetParent) ? l : document.querySelector(".board"); }, text: "出題範囲の地図。編、章、論点の順に入り、論点で過去問の演習を始める" },

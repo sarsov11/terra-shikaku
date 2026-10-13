@@ -64,7 +64,7 @@
     var pl = (nodeNo ? GB.pairs(nodeNo) : GB.pairs()).filter(function (p) { return !GB.state().pairs[p.id] || !GB.state().pairs[p.id].ok; });
     shuffle(pl, 17);
     seq = pl.slice(0, 10).map(function (p) { return { k: "pair", id: p.id }; });
-    $("ttl").textContent = "紛らわしいペア";
+    $("ttl").textContent = "二択の正しい文";
   } else if (mode === "hard") {
     /* 難しい〇× — 紛らわしいペアの中の**間違っている方の文**（正しい文と一言二言だけ違う）
        ＋ 自分が確信していたのに間違えた文。新しい文は作らない。 */
@@ -84,7 +84,8 @@
   }
 
   var pos = 0, results = [], streakBy = {};
-  /* 짜잔 3판 — 세트 안에서 쟁점 등급(S·A·B·C)이 오르면 끝에 승급 연출 */
+  var planned = seq.length, extraCnt = 0;   /* - */
+  /* - */
   var tierBefore = {}, TORD = { L: 0, C: 1, B: 2, A: 3, S: 4 };
   function curTier(no) { var s = GB.nodeStat(no), a = s.achieve; return !s.solved ? "L" : a >= 80 ? "S" : a >= 60 ? "A" : a >= 30 ? "B" : "C"; }
   function noteTier(no) { if (!(no in tierBefore)) tierBefore[no] = curTier(no); }
@@ -189,7 +190,7 @@
         var extra = null;
         if (!ok || j.next === "same" || j.next === "similar") {
           var more = GB.freshOf(q.n, 3).filter(function (x) { return !seq.some(function (y) { return y.id === x.i; }); })[0];
-          if (more) { extra = more; seq.splice(pos + 1, 0, { k: "ox", id: more.i, add: 1 }); if (mode === "today") todayIdx.splice(pos + 1, 0, -1); drawProg(); }
+          if (more && extraCnt < Math.max(4, Math.ceil(planned / 3))) { extraCnt++; extra = more; seq.splice(pos + 1, 0, { k: "ox", id: more.i, add: 1 }); if (mode === "today") todayIdx.splice(pos + 1, 0, -1); drawProg(); }
         }
 
         var h = '<div class="verdict ' + j.tone + '"><div class="top"><span class="mk">' + (ok ? "〇" : "✕") + "</span>" +
@@ -200,7 +201,7 @@
         var p = pairOf(q.i);
         if (p) {
           var d = GB.markDiff(p.o.t, p.x.t);
-          解説 += '<div class="pair"><div class="lab">紛らわしいペア — 分かれ目に色を付けました</div>' +
+          解説 += '<div class="pair"><div class="lab">二択の正しい文 — 分かれ目に色を付けました</div>' +
                '<p><b style="color:var(--ok)">正しい</b> ' + d[0] + "</p>" +
                '<p><b style="color:var(--no)">誤り</b> ' + d[1] + "</p></div>";
         } else if (!mc && q.ox === "X") {
@@ -230,7 +231,7 @@
     var flip = (p.id.charCodeAt(p.id.length - 1) + new Date().getDate()) % 2 === 1;   /* 場所を覚えられないように */
     var A = flip ? [p.x, p.o] : [p.o, p.x], done = false;
     $("stage").innerHTML =
-      '<div class="qcard"><div class="src">' + nodeChip(p.n) + '<span class="chip cta">紛らわしいペア</span></div>' +
+      '<div class="qcard"><div class="src">' + nodeChip(p.n) + '<span class="chip cta">二択の正しい文</span></div>' +
       '<p class="sent" style="font-size:17px">2 つの過去問のうち <b>正しい文</b>を選んでください。</p>' +
       '<div class="two" id="two">' + A.map(function (x, i) {
         return '<button type="button" data-i="' + x.i + '"><b>' + "AB"[i] + '</b><span class="tx">' + esc(x.t) + "</span></button>";
@@ -279,7 +280,13 @@
   function runSpeed() {
     var pool = [];
     GB.focusNodes(6).forEach(function (n) { pool = pool.concat(GB.qs(n.no).filter(function (q) { return q.t.length <= 80 && !q.sa && !q.mc; })); });
+    /* - */
+    if (pool.length < 12) {
+      var all = []; GB.nodes.forEach(function (n) { all = all.concat(GB.qs(n.no).filter(function (q) { return !q.sa && !q.mc; })); });
+      all.sort(function (x, y) { return x.t.length - y.t.length; }); pool = all.slice(0, 40);
+    }
     shuffle(pool, Date.now() % 997);
+    if (!pool.length) { $("stage").innerHTML = '<div class="empty">この科目には、60秒スピードで解く短い文がまだありません。<div class="acts" style="justify-content:center;margin-top:18px"><a class="btn ghost" href="drill.html">トレーニングへ</a><a class="btn" href="skilltree.html">論点を選んで解く</a></div></div>'; return; }
     var end = Date.now() + 60000, i = 0, ok = 0, n = 0;
     function one() {
       if (Date.now() >= end || i >= pool.length) return fin();
@@ -348,8 +355,11 @@
   if (mode === "speed") { runSpeed(); return; }
   if (!seq.length) {
     $("stage").innerHTML = '<div class="empty">' + (mode === "today" ? "今日の分を終えました。また明日。" :
-      mode === "wrong" ? "間違えた文はありません。" : "解く文がありません。") +
-      '<div class="acts" style="justify-content:center;margin-top:18px"><a class="btn" href="index.html">ホーム</a></div></div>';
+      mode === "wrong" ? "間違えた文はありません。" :
+      mode === "pair" ? (!GB.pairs().length ? "この科目には、一、二か所だけ違う文の組がまだありません。" : "二択の正しい文をすべて正解しました。") :
+      mode === "hard" ? (!GB.pairs().length ? "この科目には、難しい〇×に使える文がまだありません。" : "解く文がありません。") : "解く文がありません。") +
+      '<div class="acts" style="justify-content:center;margin-top:18px"><a class="btn ghost" href="index.html">ホーム</a>' +
+      (mode === "today" ? "" : '<a class="btn" href="skilltree.html">論点を選んで解く</a>') + '</div></div>';
     return;
   }
   pos = -1; next();

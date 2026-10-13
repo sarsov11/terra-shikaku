@@ -211,6 +211,10 @@
       $("n").onclick = function () { GB.setOnboarded(); location.href = "index.html"; };
     }
   };
+  /* ?exam=<exam id> — entry from the hub cards (2026-10-13). A learner already set to that exam goes to Home */
+  var examParam = new URLSearchParams(location.search).get("exam"), picked = examParam && CATALOG.exam(examParam);
+  if (picked && GB.onboarded() && GB.exam().id === picked.id) { location.replace("index.html"); return; }
+  if (picked) { GB.setExam(picked.id, null); go(STEPS.indexOf(picked.series ? "series" : "subs")); return; }
   go(開始段階 && STEPS.indexOf(開始段階) >= 0 ? STEPS.indexOf(開始段階) : 0);
 })();
 </script>
