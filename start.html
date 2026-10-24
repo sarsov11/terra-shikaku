@@ -7,7 +7,7 @@
 <link rel="icon" href="icons/favicon.svg">
 <link rel="manifest" href="manifest.webmanifest">
 <script>try{document.documentElement.dataset.skin=localStorage.getItem("tj.skin")||"white"}catch(e){document.documentElement.dataset.skin="white"}</script>
-<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/app.css?v=1024a">
 <style>
   /* 最初の設定 — 1 画面に質問 1 つ、大きなボタン 1 つ */
   .wrap{max-width:520px;margin:0 auto;padding:28px 16px 48px;min-height:100vh;display:flex;flex-direction:column}
@@ -48,11 +48,11 @@
 </div>
 
 <script src="js/brand.js"></script>
-<script src="js/catalog.js"></script>
+<script src="js/catalog.js?v=1024a"></script>
 <script src="data/ready.js"></script>
 <script src="js/boot.js"></script>
 <script src="js/judge.js"></script>
-<script src="js/store.js"></script>
+<script src="js/store.js?v=1024a"></script>
 <script>
 (function () {
   "use strict";
@@ -140,9 +140,10 @@
     min: function () {
       var cur = GB.minutes();
       $("scr").innerHTML = "<h1>1 日何分にしますか？</h1><p class=\"lead\">決めた時間だけ取り組みます。あとで設定から変えられます。</p>" +
-        '<div class="body"><div class="opts g2" id="op">' + [10, 15, 20, 30].map(function (m) {
+        (GB.minPlan().note ? '<p class="lead">' + esc(GB.minPlan().note) + '</p>' : '') +
+        '<div class="body"><div class="opts g2" id="op">' + GB.minPlan().opts.map(function (m) {
           return '<button type="button" data-v="' + m + '" aria-pressed="' + (m === cur) + '">' + m + "分<small>約 " + Math.round(m * 60 / GB.SEC_PER) + "問</small>" +
-            (m === 15 ? '<span class="bdg">おすすめ</span>' : "") + "</button>";
+            (m === GB.minPlan().rec ? '<span class="bdg">おすすめ</span>' : "") + "</button>";
         }).join("") + "</div></div>";
       $("op").querySelectorAll("button").forEach(function (b) {
         b.onclick = function () { GB.setMinutes(+b.dataset.v); b.setAttribute("aria-pressed", "true"); setTimeout(nextStep, 120); };

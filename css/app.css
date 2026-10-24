@@ -77,11 +77,15 @@ h1,h2,h3{letter-spacing:-.035em;line-height:1.3;margin:0;font-weight:900}
 @media (max-width:880px){
   .nav{backdrop-filter:none}                  /* fixed な子要素の基準ボックスになってタブが上に張り付く — 切る */
   .navlinks{display:none}
+  /* ホームボタン(terrahome)が見出しの先頭に入り、スマホでロゴ・科目名が画面外へ押し出された(2026-10-24 実測 419px) — ロゴは縮み、科目名は省略記号 */
+  .nav .in{gap:12px}
+  .nav .logo{min-width:0;flex:1 1 auto;overflow:hidden;white-space:nowrap}
+  .nav .logo .sub{min-width:0;overflow:hidden;text-overflow:ellipsis}
   .tabbar{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:70;
     height:calc(var(--tab-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
     background:var(--nav-bg);border-top:1px solid var(--line)}
   .tabbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    text-decoration:none;color:var(--ink-4);font-size:12px;font-weight:700}
+    text-decoration:none;color:var(--ink-4);font-size:12.5px;font-weight:700}
   .tabbar a svg{width:22px;height:22px}
   .tabbar a.on{color:var(--cta)}
 }

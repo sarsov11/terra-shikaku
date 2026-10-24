@@ -42,13 +42,13 @@
     { id: "kikenbutsu", name: "危険物取扱者", sub: "年複数回実施（都道府県ごとに日程が異なる — 試験日は設定画面で入力）",
       date: null, series: [
         { id: "byo", name: "丙種", subs: ["kb_byo_law", "kb_byo_sei", "kb_byo_phys"] },
-        { id: "kou", name: "甲種", subs: ["kb_kou_law", "kb_kou_phys", "kb_kou_sei"] },
-        { id: "otsu1", name: "乙種第1類", subs: ["kb_otsu_law", "kb_otsu1_sei", "kb_otsu_phys"] },
-        { id: "otsu2", name: "乙種第2類", subs: ["kb_otsu_law", "kb_otsu2_sei", "kb_otsu_phys"] },
-        { id: "otsu3", name: "乙種第3類", subs: ["kb_otsu_law", "kb_otsu3_sei", "kb_otsu_phys"] },
-        { id: "otsu4", name: "乙種第4類", subs: ["kb_otsu4_law", "kb_otsu4_sei", "kb_otsu4_phys"] },
-        { id: "otsu5", name: "乙種第5類", subs: ["kb_otsu_law", "kb_otsu5_sei", "kb_otsu_phys"] },
-        { id: "otsu6", name: "乙種第6類", subs: ["kb_otsu_law", "kb_otsu6_sei", "kb_otsu_phys"] }
+        { id: "kou", name: "甲種", subs: ["kb_kou_law", "kb_kou_phys", "kb_kou_sei"], mins: { opts: [60, 90, 120, 180], rec: 90, note: "合格者の実例は合計80〜150時間・1〜2か月です。" } },
+        { id: "otsu1", name: "乙種第1類", subs: ["kb_otsu_law", "kb_otsu1_sei", "kb_otsu_phys"], mins: { opts: [20, 30, 45, 60], rec: 30, note: "乙4合格者が他の類を受ける場合の実例は約15時間・2週間です（法令・物化免除）。初めての乙種なら乙4と同じく60〜100時間を見込みます。" } },
+        { id: "otsu2", name: "乙種第2類", subs: ["kb_otsu_law", "kb_otsu2_sei", "kb_otsu_phys"], mins: { opts: [20, 30, 45, 60], rec: 30, note: "乙4合格者が他の類を受ける場合の実例は約15時間・2週間です（法令・物化免除）。初めての乙種なら乙4と同じく60〜100時間を見込みます。" } },
+        { id: "otsu3", name: "乙種第3類", subs: ["kb_otsu_law", "kb_otsu3_sei", "kb_otsu_phys"], mins: { opts: [20, 30, 45, 60], rec: 30, note: "乙4合格者が他の類を受ける場合の実例は約15時間・2週間です（法令・物化免除）。初めての乙種なら乙4と同じく60〜100時間を見込みます。" } },
+        { id: "otsu4", name: "乙種第4類", subs: ["kb_otsu4_law", "kb_otsu4_sei", "kb_otsu4_phys"], mins: { opts: [30, 60, 90, 120], rec: 60, note: "合格者の実例は合計60〜100時間・1〜2か月（平日60〜90分、休日2〜3時間）。このうち過去問演習の時間を選びます。" } },
+        { id: "otsu5", name: "乙種第5類", subs: ["kb_otsu_law", "kb_otsu5_sei", "kb_otsu_phys"], mins: { opts: [20, 30, 45, 60], rec: 30, note: "乙4合格者が他の類を受ける場合の実例は約15時間・2週間です（法令・物化免除）。初めての乙種なら乙4と同じく60〜100時間を見込みます。" } },
+        { id: "otsu6", name: "乙種第6類", subs: ["kb_otsu_law", "kb_otsu6_sei", "kb_otsu_phys"], mins: { opts: [20, 30, 45, 60], rec: 30, note: "乙4合格者が他の類を受ける場合の実例は約15時間・2週間です（法令・物化免除）。初めての乙種なら乙4と同じく60〜100時間を見込みます。" } }
       ] },
     { id: "shobosetsubishi", name: "消防設備士", sub: "年複数回実施（都道府県ごとに日程が異なる — 試験日は設定画面で入力）",
       date: null, series: [
