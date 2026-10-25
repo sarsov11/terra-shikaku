@@ -53,8 +53,8 @@
     { id: "shobosetsubishi", name: "消防設備士", sub: "年複数回実施（都道府県ごとに日程が異なる — 試験日は設定画面で入力）",
       date: null, series: [
         { id: "kou", name: "甲種（全類共通）", subs: ["sb_kou_all"] },
-        { id: "otsu", name: "乙種（全類共通）", subs: ["sb_otsu_all"] },
-        { id: "otsu6", name: "乙種第6類", subs: ["sb_otsu6_law", "sb_otsu6_kiso", "sb_otsu6_kouzou"] }
+        { id: "otsu", name: "乙種（全類共通）", subs: ["sb_otsu_all"], mins: { opts: [30, 60, 90, 120], rec: 60, note: "合格者の実例は合計60〜100時間・1〜2か月（平日1.5〜2時間、休日4〜5時間）。このうち過去問演習の時間を選びます。" } },
+        { id: "otsu6", name: "乙種第6類", subs: ["sb_otsu6_law", "sb_otsu6_kiso", "sb_otsu6_kouzou"], mins: { opts: [30, 60, 90, 120], rec: 60, note: "合格者の実例は合計60〜100時間・1〜2か月（平日1.5〜2時間、休日4〜5時間）。このうち過去問演習の時間を選びます。" } }
       ] }
     /* ここに試験を追加する。直列が無い試験は series の代わりに subs を使う：
        { id: "xxx", name: "○○試験", sub: "…", date: "2027-xx-xx", subs: ["kihon"] } */
