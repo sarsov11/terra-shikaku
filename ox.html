@@ -354,8 +354,8 @@
     $("stage").innerHTML = '<div class="done">' +
       (n ? '<div class="big num">' + ok + " / " + n + "</div>" : '<div class="big">終了</div>') +
       '<p class="muted">' + (todayDone ? "今日の分を終えました。" : "この束を解き終えました。") + "</p>" +
-      '<div class="grid3"><div><b class="num">' + ok + "</b><span>正解</span></div><div><b class=\"num\" style=\"color:var(--warn)\">" + mis +
-      '</b><span>確実だったのに不正解</span></div><div><b class="num">' + GB.streak() + "</b><span>連続日数</span></div></div>" +
+      '<div class="grid3" style="grid-template-columns:repeat(2,1fr)"><div><b class="num">' + ok + "</b><span>正解</span></div><div><b class=\"num\" style=\"color:var(--warn)\">" + mis +
+      '</b><span>確実だったのに不正解</span></div></div>' +
       '<div class="acts" style="margin-top:22px"><a class="btn ghost" href="index.html">ホーム</a>' +
       (mis ? '<a class="btn" href="ox.html?mode=hard">難しい〇×</a>' : '<a class="btn" href="ox.html?mode=wrong">間違えた文をもう一度</a>') + "</div></div>";
   }
