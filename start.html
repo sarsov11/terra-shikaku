@@ -58,7 +58,7 @@
   "use strict";
   var $ = function (id) { return document.getElementById(id); }, esc = GB.esc;
   var LIMIT = 15000;     /* 一括テスト 1 文の制限時間 — 行政法向けの選択肢は通常の〇×(10秒)より長いので15秒 */
-  var STEPS = ["intro", "exam", "series", "subs", "name", "date", "min", "check", "done"];
+  var STEPS = ["intro", "exam", "series", "subs", "name", "date", "min", "how", "check", "done"];
   /* 科目が決まった後の実力確認は、その学習者の科目のうち準備できている最初の科目で行う —
      今読み込んでいる資料と違う科目なら、その科目で改めて開く */
   var 開始段階 = new URLSearchParams(location.search).get("step");
@@ -72,7 +72,7 @@
 
   var 画面 = {
     intro: function () {
-      $("scr").innerHTML = '<h1>過去問に出た文で<br>〇×から解きます</h1>' +
+      $("scr").innerHTML = '<h1>要点を読んでから<br>過去問で確かめます</h1>' +
         '<p class="lead">1 日に決めた時間だけ。今日やることはこちらで選びます。</p>' +
         '<div class="body"></div><div class="foot"><button class="btn block" id="n">はじめる</button></div>';
       $("n").onclick = nextStep;
@@ -149,6 +149,16 @@
         b.onclick = function () { GB.setMinutes(+b.dataset.v); b.setAttribute("aria-pressed", "true"); setTimeout(nextStep, 120); };
       });
     },
+    how: function () {
+      /* 11-06 concepts first; the check runs only if picked */
+      $("scr").innerHTML = "<h1>どう始めますか？</h1>" +
+        '<div class="body"><div class="opts" id="op">' +
+        '<button type="button" id="hc"><span>要点から読む<br><small>今日の論点の要点を読んでから問題に進みます</small></span></button>' +
+        '<button type="button" id="hd"><span>実力チェックから<br><small>〇×の文で弱い論点を探します</small></span></button>' +
+        "</div></div>";
+      $("hc").onclick = function () { GB.setOnboarded(); location.href = "index.html"; };
+      $("hd").onclick = nextStep;
+    },
     check: function () {
       var mine = GB.subs().filter(function (k) { return CATALOG.ready(k); });
       if (mine.length && mine.indexOf(GB.cur()) < 0) { location.replace("start.html?s=" + mine[0] + "&step=check"); return; }
@@ -220,7 +230,7 @@
   go(開始段階 && STEPS.indexOf(開始段階) >= 0 ? STEPS.indexOf(開始段階) : 0);
 })();
 </script>
-<script src="js/zzsfx.js?v=1009a" defer></script><script src="js/zzajan.js?v=1009a" defer></script>
+
 <script src="js/terrahome.js?v=1021h" data-slot=".wrap" defer></script>
 </body>
 </html>

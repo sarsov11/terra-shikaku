@@ -84,7 +84,7 @@
 
   var t = GB.today(), nm = GB.name();
   var newN = t.seq.filter(function (s) { return s.k === "ox" && !s.re; }).length;
-  var prN = t.seq.filter(function (s) { return s.k === "pair"; }).length;
+  var prN = t.seq.filter(function (s) { return s.k === "pair"; }).length, lrN = t.seq.filter(function (s) { return s.k === "learn"; }).length;
   var foci = t.foci.slice(0, 3).map(function (n) { return n.name; });
   var h;
   if (t.finished) {
@@ -95,6 +95,7 @@
         '<p class="t">約' + t.min + "分・" + t.total + "文</p>" +
         "<ul>" +
         (t.re ? "<li><b class=\"num\">" + t.re + "文</b><span>復習 — 間違えたか、もう一度見る時期の文</span></li>" : "") +
+        (lrN ? "<li><b class=\"num\">" + lrN + "論点</b><span>先に読む — 要点と正しい過去問の文</span></li>" : "") +
         "<li><b class=\"num\">" + newN + "文</b><span>新しい問題 — " + esc(foci.join("・")) + "</span></li>" +
         (prN ? "<li><b class=\"num\">" + prN + "文</b><span>二択の正しい文</span></li>" : "") +
         "</ul>" +
