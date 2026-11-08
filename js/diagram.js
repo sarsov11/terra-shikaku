@@ -178,11 +178,7 @@
 
   function inPanel(e){ return e.closest&&e.closest(".tn-panel,.sc-side,.sc-sheet"); }
   function scan(){ sch=0; var blocks=document.querySelectorAll(".dg"); if(!blocks.length) return;
-    harvest();
-    var changed=false;
-    document.querySelectorAll(".dg-def").forEach(function(d){ if(d.getAttribute("data-tnd")) return; d.setAttribute("data-tnd","1");
-      var a=d.querySelector(".dg-term"), b=d.querySelector(".dg-dtext"); if(a&&b&&addDef(a.textContent,lineOf(b))) changed=true; });
-    if(changed){ ver++; rx=null; }
+    /* 1108: definitions on the page are no longer turned into popups (they produced obvious words) */
     blocks.forEach(function(b){ if(b.getAttribute("data-tnv")===String(ver)||inPanel(b)||b.classList.contains("sc")) return;
       b.setAttribute("data-tnv",String(ver)); annotate(b); mark(b); });
     if(!triedFile&&!Object.keys(notes).length){ triedFile=true; var s=document.createElement("script"); s.src=window.TN_NOTES_URL||"notes.js"; s.async=true; s.onerror=function(){ s.remove(); }; document.head.appendChild(s); } }
